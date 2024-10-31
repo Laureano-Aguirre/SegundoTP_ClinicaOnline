@@ -1,0 +1,39 @@
+.container-pag {
+  background-image: url("../../../assets/img-bienvenida.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.container-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.container-buttons button {
+  background-color: #29cc97;
+  color: white;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(41, 204, 151, 0.2);
+}
+
+.container-buttons button:hover {
+  background-color: #25b386;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(41, 204, 151, 0.2);
+}
+
+.container-buttons button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(41, 204, 151, 0.2);
+}
