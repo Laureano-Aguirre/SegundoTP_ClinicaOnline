@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registrarse',
@@ -27,14 +28,29 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./registrarse.component.css'],
 })
 export class RegistrarseComponent {
-  form: FormGroup;
+  form!: FormGroup;
   imageError1: string | null = null;
   imageError2: string | null = null;
   image1: File | null = null;
   image2: File | null = null;
+  rutaBienvenida: string = 'bienvenida';
+  selectedRol: 'especialista' | 'paciente' | null = null;
+  especialidades = [
+    'Cardiología',
+    'Dermatología',
+    'Ginecología',
+    'Oftalmología',
+    'Pediatría',
+    'Psiquiatría',
+    'Traumatología',
+  ];
 
-  constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
+  constructor(private fb: FormBuilder, private router: Router) {
+    this.initializeForm();
+  }
+
+  private initializeForm() {
+    const commonFields = {
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       apellido: ['', [Validators.required, Validators.minLength(3)]],
       edad: ['', [Validators.required, Validators.min(15)]],
@@ -42,10 +58,20 @@ export class RegistrarseComponent {
         '',
         [Validators.required, Validators.minLength(7), Validators.maxLength(8)],
       ],
-      obraSocial: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       clave: ['', [Validators.required, validatePassword]],
-    });
+    };
+    if (this.selectedRol === 'paciente') {
+      this.form = this.fb.group({
+        ...commonFields,
+        obraSocial: ['', [Validators.required, Validators.minLength(2)]],
+      });
+    } else {
+      this.form = this.fb.group({
+        ...commonFields,
+        especialidad: ['', [Validators.required]],
+      });
+    }
   }
 
   get nombre() {
@@ -68,6 +94,15 @@ export class RegistrarseComponent {
   }
   get clave() {
     return this.form.get('clave');
+  }
+
+  get especialidad() {
+    return this.form.get('especialidad');
+  }
+
+  selectRol(role: 'especialista' | 'paciente') {
+    this.selectedRol = role;
+    this.initializeForm();
   }
 
   onFileSelect(event: Event, imageType: 'image1' | 'image2') {
@@ -106,13 +141,28 @@ export class RegistrarseComponent {
   }
 
   onSubmit() {
-    if (this.form.valid && this.image1 && this.image2) {
-      // Lógica para manejar el formulario, incluyendo las imágenes cargadas
-      console.log('Formulario válido:', this.form.value);
-      console.log('Imagen 1:', this.image1);
-      console.log('Imagen 2:', this.image2);
+    if (this.form.valid) {
+      const requiredImages = this.selectedRol === 'paciente' ? 2 : 1;
+      const imagesValid =
+        this.selectedRol === 'paciente'
+          ? this.image1 && this.image2
+          : this.image1;
+
+      if (imagesValid) {
+        console.log('Formulario válido:', this.form.value);
+        console.log('Imagen 1:', this.image1);
+        if (this.selectedRol === 'paciente') {
+          console.log('Imagen 2:', this.image2);
+        }
+      } else {
+        console.log(`Faltan cargar ${requiredImages} imagen(es)`);
+      }
     } else {
-      console.log('Formulario inválido o falta cargar las imágenes');
+      console.log('Formulario inválido');
     }
+  }
+
+  goTo(path: string) {
+    this.router.navigate([path]);
   }
 }

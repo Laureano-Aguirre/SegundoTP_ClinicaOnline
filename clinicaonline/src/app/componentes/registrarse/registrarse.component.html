@@ -1,5 +1,37 @@
 <div class="container-pag">
   <div class="blur-overlay"></div>
+  <button class="back-button" (click)="goTo(rutaBienvenida)">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M19 12H5M12 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <div class="container-buttons">
+    <button
+      class="btn-rol"
+      [class.active]="selectedRol === 'especialista'"
+      (click)="selectRol('especialista')"
+    >
+      Especialista
+    </button>
+    <button
+      class="btn-rol"
+      [class.active]="selectedRol === 'paciente'"
+      (click)="selectRol('paciente')"
+    >
+      Paciente
+    </button>
+  </div>
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="container-form">
     <div class="form-field">
       <label for="nombre">Nombre:</label>
@@ -48,7 +80,7 @@
         >El formato del DNI es incorrecto, debe ser menor a 8 caracteres</small
       >
     </div>
-    <div class="form-field">
+    <div class="form-field" *ngIf="selectedRol === 'paciente'">
       <label for="obraSocial">Obra social:</label>
       <input
         id="obraSocial"
@@ -59,6 +91,20 @@
         >El nombre es obligatorio</small
       ><small *ngIf="obraSocial?.hasError('minlength') && obraSocial?.touched"
         >La obra social no existe</small
+      >
+    </div>
+    <div class="form-field" *ngIf="selectedRol === 'especialista'">
+      <label for="especialidad">Especialidad:</label>
+      <div class="select-wrapper">
+        <select id="especialidad" formControlName="especialidad">
+          <option value="">Seleccione una especialidad</option>
+          <option *ngFor="let esp of especialidades" [value]="esp">
+            {{ esp }}
+          </option>
+        </select>
+      </div>
+      <small *ngIf="especialidad?.hasError('required') && especialidad?.touched"
+        >La especialidad es obligatoria</small
       >
     </div>
     <div class="form-field">
@@ -95,11 +141,10 @@
         (change)="onFileSelect($event, 'image1')"
         accept="image/*"
       />
-      <small *ngIf="imageError1"> {{ imageError1 }} </small>
+      <small *ngIf="imageError1">{{ imageError1 }}</small>
     </div>
 
-    <!-- Campo para cargar la segunda imagen -->
-    <div class="form-field">
+    <div class="form-field" *ngIf="selectedRol === 'paciente'">
       <label for="image2">Cargar Imagen 2:</label>
       <input
         type="file"
@@ -107,7 +152,7 @@
         (change)="onFileSelect($event, 'image2')"
         accept="image/*"
       />
-      <small *ngIf="imageError2"> {{ imageError2 }} </small>
+      <small *ngIf="imageError2">{{ imageError2 }}</small>
     </div>
 
     <button type="submit" [disabled]="form.invalid" class="btn-registrarse">
