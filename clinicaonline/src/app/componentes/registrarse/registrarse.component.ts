@@ -43,6 +43,7 @@ export class RegistrarseComponent {
     'Pediatría',
     'Psiquiatría',
     'Traumatología',
+    'Otro',
   ];
 
   constructor(private fb: FormBuilder, private router: Router) {
@@ -59,7 +60,7 @@ export class RegistrarseComponent {
         [Validators.required, Validators.minLength(7), Validators.maxLength(8)],
       ],
       email: ['', [Validators.required, Validators.email]],
-      clave: ['', [Validators.required, validatePassword]],
+      clave: ['', [Validators.required]],
     };
     if (this.selectedRol === 'paciente') {
       this.form = this.fb.group({
@@ -108,7 +109,6 @@ export class RegistrarseComponent {
   onFileSelect(event: Event, imageType: 'image1' | 'image2') {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
-      // Verificar el tipo y tamaño de archivo
       if (!file.type.startsWith('image/')) {
         this.setError(imageType, 'Solo se permiten archivos de imagen');
       } else if (file.size > 2 * 1024 * 1024) {

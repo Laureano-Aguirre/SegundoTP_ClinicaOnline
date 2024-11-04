@@ -22,17 +22,25 @@
       [class.active]="selectedRol === 'especialista'"
       (click)="selectRol('especialista')"
     >
-      Especialista
+      <div class="role-image especialista-image"></div>
+      <div>Especialista</div>
     </button>
     <button
       class="btn-rol"
       [class.active]="selectedRol === 'paciente'"
       (click)="selectRol('paciente')"
     >
-      Paciente
+      <div class="role-image paciente-image"></div>
+      <div>Paciente</div>
     </button>
   </div>
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="container-form">
+
+  <form
+    *ngIf="selectedRol"
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    class="container-form"
+  >
     <div class="form-field">
       <label for="nombre">Nombre:</label>
       <input
